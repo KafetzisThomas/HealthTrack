@@ -37,3 +37,18 @@ class Patient(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} (Room {self.room}, Bed {self.bed})"
+
+
+class Measurement(models.Model):
+    heart_rate = models.PositiveSmallIntegerField()  # bpm
+    spo2 = models.PositiveSmallIntegerField()  # %
+    temperature = models.DecimalField(max_digits=4, decimal_places=1)  # celsius
+    respiratory_rate = models.PositiveSmallIntegerField()  # breaths/min
+    systolic_bp = models.PositiveSmallIntegerField()  # mmHg
+    diastolic_bp = models.PositiveSmallIntegerField()  # mmHg
+
+    timestamp = models.DateTimeField(auto_now_add=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name="measurements")
+
+    def __str__(self):
+        return f"Patient {self.patient_id} @ {self.timestamp:%H:%M:%S}"
