@@ -36,6 +36,12 @@ CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "https://127.0.0.1").sp
 # Application definition
 
 INSTALLED_APPS = [
+    # my apps
+    'accounts',
+    # third party apps
+    'crispy_forms',
+    'crispy_bootstrap5',
+    # default django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -71,6 +77,10 @@ TEMPLATES = [
         },
     },
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 WSGI_APPLICATION = 'main.wsgi.application'
 
@@ -130,6 +140,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+SESSION_SAVE_EVERY_REQUEST = True
+# AUTH_USER_MODEL = "accounts.CustomUser"
+
+LOGIN_URL = "accounts:login"
+# LOGIN_REDIRECT_URL = "patients:dashboard"
+LOGOUT_REDIRECT_URL = "/"
 
 
 # Email
