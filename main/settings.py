@@ -144,10 +144,9 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SESSION_SAVE_EVERY_REQUEST = True
-# AUTH_USER_MODEL = "accounts.CustomUser"
 
 LOGIN_URL = "accounts:login"
-# LOGIN_REDIRECT_URL = "patients:dashboard"
+LOGIN_REDIRECT_URL = "patients:dashboard"
 LOGOUT_REDIRECT_URL = "/"
 
 
