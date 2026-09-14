@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib import messages
 from .models import Patient
 from .forms import PatientForm
@@ -31,3 +32,25 @@ def new_patient(request):
         form = PatientForm()
 
     return render(request, "patients/new_patient.html", {"form": form})
+
+@login_required
+def edit_patient(request, patient_id):
+    patient = get_object_or_404(Patient, id=patient_id)
+    if request.method == "POST":
+        form = PatientForm(request.POST, instance=patient)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Patient info modified successfully.")
+            return redirect("patients:patient", patient_id=patient_id)
+    else:
+        form = PatientForm(instance=patient)
+
+    return render(request, "patients/edit_patient.html", {"patient": patient, "form": form})
+
+@login_required
+@require_POST
+def delete_patient(request, patient_id):
+    patient = get_object_or_404(Patient, id=patient_id)
+    patient.delete()
+    messages.success(request, "Patient deleted successfully from database.")
+    return redirect("patients:dashboard")

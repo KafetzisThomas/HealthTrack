@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Patient{% endblock title %}
+
+{% block content %}
+    <form action="{% url 'patients:edit_patient' patient.id %}" method='POST'>
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary w-100">Save</button>
+    </form>
+{% endblock content %}
