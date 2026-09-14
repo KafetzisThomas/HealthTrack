@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}{{ patient.first_name }} {{ patient.last_name }}{% endblock title %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">{{ patient.first_name }} {{ patient.last_name }}</h4>
+        <a href="{% url 'patients:dashboard' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <p><strong>Age:</strong> {{ patient.age }}</p>
+                    <p><strong>Gender:</strong> {{ patient.get_gender_display }}</p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Room:</strong> {{ patient.room }}</p>
+                    <p><strong>Bed:</strong> {{ patient.bed }}</p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Status:</strong> {{ patient.get_status_display }}</p>
+                    <p><strong>Admitted:</strong> {{ patient.admission_date|date:"d M Y, H:i:s" }}</p>
+                    <p><strong>Doctor:</strong> {{ patient.assigned_doctor|default:"Unassigned" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h5 class="mb-3">Health History ({{ measurements|length }})</h5>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Timestamp</th>
+                <th>Heart Rate (bpm)</th>
+                <th>SpO2 (%)</th>
+                <th>Temp (°C)</th>
+                <th>Resp. Rate</th>
+                <th>BP (mmHg)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for measurement in measurements %}
+                <tr>
+                    <td>{{ measurement.timestamp|date:"d M Y, H:i:s" }}</td>
+                    <td>{{ measurement.heart_rate }}</td>
+                    <td>{{ measurement.spo2 }}</td>
+                    <td>{{ measurement.temperature }}</td>
+                    <td>{{ measurement.respiratory_rate }}</td>
+                    <td>{{ measurement.systolic_bp }}/{{ measurement.diastolic_bp }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No measurements recorded yet.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}
