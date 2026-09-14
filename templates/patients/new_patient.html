@@ -4,12 +4,6 @@
 {% block title %}New Patient{% endblock title %}
 
 {% block content %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} text-center">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-
     <form action="{% url 'patients:new_patient' %}" method='POST'>
         {% csrf_token %}
         {{ form|crispy }}
