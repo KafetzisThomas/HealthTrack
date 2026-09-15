@@ -36,10 +36,12 @@ CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "https://127.0.0.1").sp
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     # my apps
     'accounts',
     'patients',
     # third party apps
+    'channels',
     'crispy_forms',
     'crispy_bootstrap5',
     # default django apps
@@ -83,8 +85,18 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-WSGI_APPLICATION = 'main.wsgi.application'
+# WSGI_APPLICATION = 'main.wsgi.application'
 
+ASGI_APPLICATION = "main.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(os.getenv("REDIS_URL", "redis://127.0.0.1:6379"))],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases

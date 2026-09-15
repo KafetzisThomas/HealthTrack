@@ -3,6 +3,8 @@ import random
 from decimal import Decimal
 from prettytable import PrettyTable
 from django.core.management.base import BaseCommand
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from ...models import Patient, Measurement
 
 TICK_INTERVAL = 2
@@ -175,6 +177,8 @@ class Command(BaseCommand):
         # track last measurement per patient for smooth drift
         last = {patient.id: patient.measurements.first() for patient in patients}
 
+        channel_layer = get_channel_layer()
+
         try:
             tick = 0
             while True:
@@ -204,5 +208,21 @@ class Command(BaseCommand):
 
                 for measurement in Measurement.objects.bulk_create(measurements):
                     last[measurement.patient_id] = measurement
+
+                    async_to_sync(channel_layer.group_send)(
+                        f"patient_{measurement.patient_id}",
+                        {
+                            "type": "new_measurement",
+                            "data": {
+                                "timestamp": measurement.timestamp.strftime("%d %b %Y, %H:%M:%S"),
+                                "heart_rate": measurement.heart_rate,
+                                "spo2": measurement.spo2,
+                                "temperature": str(measurement.temperature),
+                                "respiratory_rate": measurement.respiratory_rate,
+                                "systolic_bp": measurement.systolic_bp,
+                                "diastolic_bp": measurement.diastolic_bp,
+                            },
+                        },
+                    )
         except KeyboardInterrupt:
             self.stdout.write("\nSimulator stopped.")
