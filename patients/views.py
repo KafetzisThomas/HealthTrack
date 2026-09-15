@@ -7,8 +7,13 @@ from .forms import PatientForm
 
 @login_required
 def dashboard(request):
-    patients = Patient.objects.all()
-    return render(request, "patients/dashboard.html", {"patients": patients})
+    search = request.GET.get("search")
+    if search:
+        patients = Patient.objects.filter(last_name__icontains=search).order_by("last_name")
+    else:
+        patients = Patient.objects.all()
+
+    return render(request, "patients/dashboard.html", {"patients": patients, "search": search})
 
 @login_required
 def patient(request, patient_id):
