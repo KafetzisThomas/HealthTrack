@@ -1,1 +1,45 @@
 # HealthTrack
+
+## Usage
+
+First install `uv` and sync the project dependencies:
+
+```bash
+cd path/to/root/directory
+pip install uv
+uv sync
+uv sync --group dev  # for devs only
+```
+
+Migrate database:
+
+```bash
+uv run manage.py migrate
+```
+
+Create a superuser for admin and creating accounts/doctors:
+
+```bash
+uv run manage.py createsuperuser
+```
+
+Start Redis server:
+
+```bash
+docker run -d --name redis -p 6379:6379 redis
+```
+
+Run the simulator:
+
+```bash
+uv run manage.py simulate
+uv run manage.py simulate --interval 5  # secs between measurement rounds
+```
+
+Run ASGI/Daphne server:
+
+```bash
+uv run manage.py runserver
+```
+
+Access web application at `http://127.0.0.1:8000` or `http://localhost:8000`.
