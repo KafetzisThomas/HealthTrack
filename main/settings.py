@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts',
     'patients',
     # third party apps
+    'axes',
     'channels',
     'crispy_forms',
     'crispy_bootstrap5',
@@ -53,6 +54,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+if DEBUG:
+    INSTALLED_APPS += ['django_extensions']
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -62,6 +66,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 ROOT_URLCONF = 'main.urls'
@@ -154,12 +164,22 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SESSION_SAVE_EVERY_REQUEST = True
 
 LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "patients:dashboard"
 LOGOUT_REDIRECT_URL = "/"
+
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1
+AXES_LOCKOUT_PARAMETERS = ["ip_address", "username"]
+
+if DEBUG:
+    AXES_ENABLED = False
 
 
 # Email
