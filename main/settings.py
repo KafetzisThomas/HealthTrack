@@ -99,14 +99,24 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 ASGI_APPLICATION = "main.asgi.application"
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [(os.getenv("REDIS_URL", "redis://127.0.0.1:6379"))],
+if DEBUG:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": ["redis://127.0.0.1:6379"],
+            },
         },
-    },
-}
+    }
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [os.getenv("REDIS_URL")],
+            },
+        },
+    }
 
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
