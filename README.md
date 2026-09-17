@@ -11,6 +11,10 @@
 - [X] Track vital sign trends through **real-time telemetry charts** and **historical measurement logs**
 - [X] Brute force login protection with **rate limiting**
 
+## Database Schema
+
+![Database Schema](/assets/db_schema.png)
+
 ## Usage
 
 First install `uv` and sync the project dependencies:
