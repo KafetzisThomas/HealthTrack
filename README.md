@@ -1,6 +1,6 @@
 <div align="center">
-    <h1>HealthTrack</h1>
-    <p>Real-time hospital patient monitoring and vital signs telemetry platform.<br>Written in Python/Django</p>
+    <img src="static/favicon.png" width="150"/>
+    <p><strong>HealthTrack: </strong>Real-time hospital patient monitoring and vital signs telemetry platform.<br>Written in Python/Django</p>
 </div>
 
 ## Features
