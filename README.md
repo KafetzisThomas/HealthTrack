@@ -1,6 +1,9 @@
 <div align="center">
     <img src="static/favicon.png" width="150"/>
     <p><strong>HealthTrack: </strong>Real-time hospital patient monitoring and vital signs telemetry platform.<br>Written in Python/Django</p>
+    <a href="https://github.com/KafetzisThomas/HealthTrack/releases">
+        <img src="https://img.shields.io/github/v/release/KafetzisThomas/HealthTrack?label=Latest%20Release"/>
+    </a>
 </div>
 
 ## Features
