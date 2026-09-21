@@ -23,3 +23,51 @@ THRESHOLDS = {
     # mmHg: normal = 60 - 80, >=120 = hypertensive crisis, <=60 = hypotension
     "diastolic_bp": {"critical": (50, 120), "warning": (60, 90)},
 }
+
+
+DISPLAY_NAMES = {
+    "heart_rate": "Heart Rate",
+    "spo2": "SpO₂",
+    "temperature": "Temperature",
+    "respiratory_rate": "Respiratory Rate",
+    "systolic_bp": "Systolic BP",
+    "diastolic_bp": "Diastolic BP",
+}
+
+
+def evaluate_measurement(measurement_data):
+    """
+    Evaluate a measurement dict against clinical thresholds.
+    """
+    overall_status = "normal"
+    anomalies = []
+
+    for vital, value in measurement_data.items():
+        val = float(value)
+        thresholds = THRESHOLDS[vital]
+        name = DISPLAY_NAMES.get(vital, vital)
+
+        for severity in ("critical", "warning"):
+            limits = thresholds[severity]
+            low = limits[0]
+            high = limits[1] if len(limits) > 1 else float("inf")
+
+            if val <= low or val >= high:
+                direction = "Low" if val <= low else "High"
+                anomalies.append({
+                    "vital_sign": vital,
+                    "severity": severity,
+                    "message": f"{direction} {name} ({val})",
+                    "value": val,
+                    "threshold": low if val <= low else high,
+                })
+
+                break  # critical found, skip warning for this vital
+
+        for anomaly in anomalies:
+            if anomaly["severity"] == "critical":
+                overall_status = "critical"
+            elif anomaly["severity"] == "warning" and overall_status != "critical":
+                overall_status = "warning"
+
+    return overall_status, anomalies

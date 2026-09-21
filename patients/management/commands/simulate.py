@@ -6,6 +6,7 @@ from django.core.management.base import BaseCommand
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from ...models import Patient, Measurement
+from ...anomaly import evaluate_measurement
 
 TICK_INTERVAL = 2
 
@@ -184,12 +185,19 @@ class Command(BaseCommand):
             while True:
                 tick += 1
                 table = PrettyTable()
-                table.field_names = ["Patient", "Room", "HR", "SpO2", "Temp", "RR", "BP"]
+                table.field_names = ["Patient", "Room", "HR", "SpO2", "Temp", "RR", "BP", "Status"]
 
                 measurements = []
                 for patient in patients:
                     data = generate_measurement(patient, last.get(patient.id))
                     measurements.append(Measurement(patient=patient, **data))
+
+                    status, anomalies = evaluate_measurement(data)
+                    print(status, anomalies)
+
+                    if patient.status != status:
+                        patient.status = status
+                        patient.save(update_fields=["status"])
 
                     table.add_row([
                         f"{patient.first_name} {patient.last_name}",
@@ -199,6 +207,7 @@ class Command(BaseCommand):
                         f"{data['temperature']}°C",
                         data["respiratory_rate"],
                         f"{data['systolic_bp']}/{data['diastolic_bp']}",
+                        status.upper(),
                     ])
 
                 self.stdout.write(f"\n{'=' * 28} Tick {tick} {'=' * 28}")
