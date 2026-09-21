@@ -188,12 +188,18 @@ class Command(BaseCommand):
                 table.field_names = ["Patient", "Room", "HR", "SpO2", "Temp", "RR", "BP", "Status"]
 
                 measurements = []
+                evaluations = {}
                 for patient in patients:
                     data = generate_measurement(patient, last.get(patient.id))
                     measurements.append(Measurement(patient=patient, **data))
 
                     status, anomalies = evaluate_measurement(data)
-                    print(status, anomalies)
+                    evaluations[patient.id] = {
+                        # overall status
+                        "status": status,
+                        # vitals that are abnormal only
+                        "vital_statuses": {anomaly["vital_sign"]: anomaly["severity"] for anomaly in anomalies},
+                    }
 
                     if patient.status != status:
                         patient.status = status
@@ -217,6 +223,7 @@ class Command(BaseCommand):
 
                 for measurement in Measurement.objects.bulk_create(measurements):
                     last[measurement.patient_id] = measurement
+                    ev = evaluations[measurement.patient_id]
 
                     async_to_sync(channel_layer.group_send)(
                         f"patient_{measurement.patient_id}",
@@ -230,6 +237,8 @@ class Command(BaseCommand):
                                 "respiratory_rate": measurement.respiratory_rate,
                                 "systolic_bp": measurement.systolic_bp,
                                 "diastolic_bp": measurement.diastolic_bp,
+                                "status": ev["status"],
+                                "vital_statuses": ev["vital_statuses"],
                             },
                         },
                     )

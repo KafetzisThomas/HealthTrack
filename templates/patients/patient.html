@@ -41,7 +41,7 @@
     <h5 class="mb-3">Live Charts</h5>
     <div class="row g-3 mb-4">
         <div class="col-md-6">
-            <div class="card">
+            <div class="card vital-card" id="card-heart_rate">
                 <div class="card-body">
                     <h6 class="card-title text-muted mb-2">Heart Rate <small class="fw-normal">(bpm)</small></h6>
                     <div style="height: 160px;"><canvas id="chartHR"></canvas></div>
@@ -49,7 +49,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card">
+            <div class="card vital-card" id="card-spo2">
                 <div class="card-body">
                     <h6 class="card-title text-muted mb-2">SpO₂ <small class="fw-normal">(%)</small></h6>
                     <div style="height: 160px;"><canvas id="chartSpO2"></canvas></div>
@@ -57,7 +57,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card">
+            <div class="card vital-card" id="card-temperature">
                 <div class="card-body">
                     <h6 class="card-title text-muted mb-2">Temperature <small class="fw-normal">(°C)</small></h6>
                     <div style="height: 160px;"><canvas id="chartTemp"></canvas></div>
@@ -65,18 +65,26 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card">
+            <div class="card vital-card" id="card-respiratory_rate">
                 <div class="card-body">
                     <h6 class="card-title text-muted mb-2">Respiratory Rate <small class="fw-normal">(breaths/min)</small></h6>
                     <div style="height: 160px;"><canvas id="chartRR"></canvas></div>
                 </div>
             </div>
         </div>
-        <div class="col-12">
-            <div class="card">
+        <div class="col-md-6">
+            <div class="card vital-card" id="card-systolic_bp">
                 <div class="card-body">
-                    <h6 class="card-title text-muted mb-2">Blood Pressure <small class="fw-normal">(mmHg)</small></h6>
-                    <div style="height: 160px;"><canvas id="chartBP"></canvas></div>
+                    <h6 class="card-title text-muted mb-2">Systolic BP <small class="fw-normal">(mmHg)</small></h6>
+                    <div style="height: 160px;"><canvas id="chartSBP"></canvas></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card vital-card" id="card-diastolic_bp">
+                <div class="card-body">
+                    <h6 class="card-title text-muted mb-2">Diastolic BP <small class="fw-normal">(mmHg)</small></h6>
+                    <div style="height: 160px;"><canvas id="chartDBP"></canvas></div>
                 </div>
             </div>
         </div>
@@ -192,42 +200,8 @@
         const chartSpO2 = makeChart("chartSpO2", "#3498db", seedData.map(d => d.spo2), seedLabels);
         const chartTemp = makeChart("chartTemp", "#f39c12", seedData.map(d => d.temp), seedLabels);
         const chartRR = makeChart("chartRR", "#2ecc71", seedData.map(d => d.rr), seedLabels);
-        const chartBP = new Chart(document.getElementById("chartBP"), {
-            type: "line",
-            data: {
-                labels: [...seedLabels],
-                datasets: [
-                    {
-                        label: "Systolic",
-                        data: seedData.map(d => d.sbp),
-                        borderColor: "#e74c3c",
-                        backgroundColor: "transparent",
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        tension: 0.3,
-                    },
-                    {
-                        label: "Diastolic",
-                        data: seedData.map(d => d.dbp),
-                        borderColor: "#9b59b6",
-                        backgroundColor: "transparent",
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        tension: 0.3,
-                    },
-                ],
-            },
-            options: {
-                ...chartDefaults,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: "top",
-                        labels: { boxWidth: 12, padding: 10 },
-                    },
-                },
-            },
-        });
+        const chartSBP = makeChart("chartSBP", "#ffff00", seedData.map(d => d.sbp), seedLabels);
+        const chartDBP = makeChart("chartDBP", "#9b59b6", seedData.map(d => d.dbp), seedLabels);
 
         function addDataPoint(chart, label, ...values) {
             /*
@@ -275,7 +249,19 @@
             addDataPoint(chartSpO2, timestamp, data.spo2);
             addDataPoint(chartTemp, timestamp, parseFloat(data.temperature));
             addDataPoint(chartRR, timestamp, data.respiratory_rate);
-            addDataPoint(chartBP, timestamp, data.systolic_bp, data.diastolic_bp);
+            addDataPoint(chartSBP, timestamp, data.systolic_bp);
+            addDataPoint(chartDBP, timestamp, data.diastolic_bp);
+
+            // update card border colors
+            const vitals = ["heart_rate", "spo2", "temperature", "respiratory_rate", "systolic_bp", "diastolic_bp"];
+            const statuses = data.vital_statuses || {};
+            vitals.forEach(vital => {
+                const card = document.getElementById(`card-${vital}`);
+                card.classList.remove("status-warning", "status-critical");
+                if (statuses[vital]) {
+                    card.classList.add(`status-${statuses[vital]}`);
+                }
+            });
         };
     </script>
 {% endblock content %}

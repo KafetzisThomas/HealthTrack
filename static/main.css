@@ -24,3 +24,16 @@ body {
 .nav-link.active {
   color: #fff;
 }
+
+.vital-card {
+  border-top: 3px solid var(--bs-success);
+  transition: border-color 0.3s;
+}
+
+.vital-card.status-warning {
+  border-top-color: var(--bs-warning);
+}
+
+.vital-card.status-critical {
+  border-top-color: var(--bs-danger);
+}
