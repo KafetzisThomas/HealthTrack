@@ -26,7 +26,7 @@
                     <p><strong>Bed:</strong> {{ patient.bed }}</p>
                 </div>
                 <div class="col-md-4">
-                    <p><strong>Status:</strong> {{ patient.get_status_display }}</p>
+                    <p><strong>Status:</strong> <span id="overall-status" class="badge {% if patient.status == 'normal' %}bg-success{% elif patient.status == 'warning' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ patient.get_status_display|upper }}</span></p>
                     <p><strong>Admitted:</strong> {{ patient.admission_date|date:"d M Y, H:i:s" }}</p>
                     <p><strong>Doctor:</strong> {{ patient.assigned_doctor|default:"Unassigned" }}</p>
                 </div>
@@ -251,6 +251,20 @@
             addDataPoint(chartRR, timestamp, data.respiratory_rate);
             addDataPoint(chartSBP, timestamp, data.systolic_bp);
             addDataPoint(chartDBP, timestamp, data.diastolic_bp);
+
+            // update overall status badge
+            const overallStatus = document.getElementById("overall-status");
+            if (overallStatus) {
+                overallStatus.textContent = data.status.toUpperCase();
+                overallStatus.className = "badge";  // reset classes
+                if (data.status === "normal") {
+                    overallStatus.classList.add("bg-success");
+                } else if (data.status === "warning") {
+                    overallStatus.classList.add("bg-warning", "text-dark");
+                } else if (data.status === "critical") {
+                    overallStatus.classList.add("bg-danger");
+                }
+            }
 
             // update card border colors
             const vitals = ["heart_rate", "spo2", "temperature", "respiratory_rate", "systolic_bp", "diastolic_bp"];
