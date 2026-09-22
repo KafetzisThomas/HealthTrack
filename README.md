@@ -1,10 +1,15 @@
 <div align="center">
     <img src="static/favicon.png" width="150"/>
-    <p><strong>HealthTrack: </strong>Real-time hospital patient monitoring and vital signs telemetry platform.<br>Written in Python/Django</p>
+    <p><strong>HealthTrack: </strong>Real-time hospital patient monitoring with clinical anomaly detection.<br>Written in Python/Django</p>
     <a href="https://github.com/KafetzisThomas/HealthTrack/releases">
         <img src="https://img.shields.io/github/v/release/KafetzisThomas/HealthTrack?label=Latest%20Release"/>
     </a>
 </div>
+
+## Description
+
+A hospital patient monitoring platform that simulates patient vital signs, detects anomalies against clinical standards
+and notifies medical staff with live warning and critical indicators.
 
 ## Features
 
