@@ -15,7 +15,6 @@ and notifies medical staff with live warning and critical indicators.
 
 - [X] Manage **patient admissions** and medical records with **last name search**
 - [X] Generate **continuous vital signs** (Heart Rate, SpO₂, Temperature, Respiratory Rate, Blood Pressure) tailored to individual physiological profiles
-- [X] Monitor incoming patient measurements with **live real-time updates**
 - [X] Track vital sign trends through **real-time telemetry charts** and **historical measurement logs**
 - [X] Receive **instant audio alerts** for abnormal vital signs, single beep for **warning**, double beep for **critical**
 - [X] Brute force login protection with **rate limiting**
