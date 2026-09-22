@@ -31,7 +31,11 @@
                     <td><a href="{% url 'patients:patient' patient.id %}">{{ patient.first_name }} {{ patient.last_name }}</a></td>
                     <td>{{ patient.age }}</td>
                     <td>{{ patient.room }} / {{ patient.bed }}</td>
-                    <td>{{ patient.get_status_display }}</td>
+                    <td>
+                        <span id="status-badge-{{ patient.id }}" class="badge {% if patient.status == 'normal' %}bg-success{% elif patient.status == 'warning' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                            {{ patient.get_status_display|upper }}
+                        </span>
+                    </td>
                 </tr>
             {% empty %}
                 <tr>
@@ -40,4 +44,27 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <script>
+        const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+        const socket = new WebSocket(`${protocol}://${window.location.host}/ws/dashboard/`);
+
+        socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const badge = document.getElementById(`status-badge-${data.patient_id}`);
+
+            if (badge) {
+                badge.textContent = data.status.toUpperCase();
+                badge.className = "badge";
+
+                if (data.status === "normal") {
+                    badge.classList.add("bg-success");
+                } else if (data.status === "warning") {
+                    badge.classList.add("bg-warning", "text-dark");
+                } else if (data.status === "critical") {
+                    badge.classList.add("bg-danger");
+                }
+            }
+        };
+    </script>
 {% endblock content %}

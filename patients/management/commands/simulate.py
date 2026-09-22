@@ -204,6 +204,18 @@ class Command(BaseCommand):
                     if patient.status != status:
                         patient.status = status
                         patient.save(update_fields=["status"])
+                        
+                        # broadcast status change to dashboard
+                        async_to_sync(channel_layer.group_send)(
+                            "dashboard",
+                            {
+                                "type": "status_update",
+                                "data": {
+                                    "patient_id": patient.id,
+                                    "status": status,
+                                }
+                            }
+                        )
 
                     table.add_row([
                         f"{patient.first_name} {patient.last_name}",
