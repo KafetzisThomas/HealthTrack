@@ -49,6 +49,18 @@
         const protocol = window.location.protocol === "https:" ? "wss" : "ws";
         const socket = new WebSocket(`${protocol}://${window.location.host}/ws/dashboard/`);
 
+        function beep(frequency, duration) {
+            const ctx = new AudioContext();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.value = frequency;
+            gain.gain.value = 0.3;
+            osc.start();
+            osc.stop(ctx.currentTime + duration);
+        }
+
         socket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             const badge = document.getElementById(`status-badge-${data.patient_id}`);
@@ -61,8 +73,11 @@
                     badge.classList.add("bg-success");
                 } else if (data.status === "warning") {
                     badge.classList.add("bg-warning", "text-dark");
+                    beep(440, 0.3);
                 } else if (data.status === "critical") {
                     badge.classList.add("bg-danger");
+                    beep(880, 0.2);
+                    setTimeout(() => beep(880, 0.2), 300);
                 }
             }
         };
