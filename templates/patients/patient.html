@@ -148,6 +148,18 @@
 
         const MAX_POINTS = 60;
 
+        function beep(frequency, duration) {
+            const ctx = new AudioContext();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.value = frequency;
+            gain.gain.value = 0.3;
+            osc.start();
+            osc.stop(ctx.currentTime + duration);
+        }
+
         // HISTORY CHARTS
 
         // seed last 60 measurements from server, oldest to newest
@@ -261,8 +273,11 @@
                     overallStatus.classList.add("bg-success");
                 } else if (data.status === "warning") {
                     overallStatus.classList.add("bg-warning", "text-dark");
+                    beep(440, 0.3);
                 } else if (data.status === "critical") {
                     overallStatus.classList.add("bg-danger");
+                    beep(880, 0.2);
+                    setTimeout(() => beep(880, 0.2), 300);
                 }
             }
 
