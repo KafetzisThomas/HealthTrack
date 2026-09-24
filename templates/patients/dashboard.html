@@ -20,19 +20,19 @@
         <thead class="table-dark">
             <tr>
                 <th>Full Name</th>
-                <th>Age</th>
-                <th>Room / Bed</th>
-                <th>Status</th>
+                <th class="text-center">Age</th>
+                <th class="text-center">Room / Bed</th>
+                <th class="text-center">Status</th>
             </tr>
         </thead>
         <tbody>
             {% for patient in patients %}
                 <tr>
                     <td><a href="{% url 'patients:patient' patient.id %}">{{ patient.first_name }} {{ patient.last_name }}</a></td>
-                    <td>{{ patient.age }}</td>
-                    <td>{{ patient.room }} / {{ patient.bed }}</td>
-                    <td>
-                        <span id="status-badge-{{ patient.id }}" class="badge {% if patient.status == 'normal' %}bg-success{% elif patient.status == 'warning' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                    <td class="text-center">{{ patient.age }}</td>
+                    <td class="text-center">{{ patient.room }} / {{ patient.bed }}</td>
+                    <td class="text-center">
+                        <span id="status-badge-{{ patient.id }}" class="badge {% if patient.status == 'normal' %}bg-success{% elif patient.status == 'warning' %}bg-warning text-dark{% else %}bg-danger{% endif %} w-100">
                             {{ patient.get_status_display|upper }}
                         </span>
                     </td>
@@ -67,7 +67,7 @@
 
             if (badge) {
                 badge.textContent = data.status.toUpperCase();
-                badge.className = "badge";
+                badge.className = "badge w-100";
 
                 if (data.status === "normal") {
                     badge.classList.add("bg-success");
