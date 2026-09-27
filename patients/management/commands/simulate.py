@@ -228,7 +228,7 @@ class Command(BaseCommand):
                         status.upper(),
                     ])
 
-                self.stdout.write(f"\n{'=' * 28} Tick {tick} {'=' * 28}")
+                self.stdout.write(f"\n{'=' * 34} Tick {tick} {'=' * 33}")
                 self.stdout.write(table.get_string())
 
                 time.sleep(interval)
