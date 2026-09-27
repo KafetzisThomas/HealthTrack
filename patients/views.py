@@ -19,7 +19,7 @@ def dashboard(request):
 def patient(request, patient_id):
     patient = get_object_or_404(Patient, pk=patient_id)
     measurements = patient.measurements.order_by("-timestamp")
-    context = {"patient": patient,"measurements": measurements}
+    context = {"patient": patient, "measurements": measurements}
     return render(request, "patients/patient.html", context)
 
 @login_required

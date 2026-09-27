@@ -67,6 +67,12 @@ uv run manage.py runserver
 
 Access web application at `http://127.0.0.1:8000` or `http://localhost:8000`.
 
+## Demo Images
+
+![Dashboard](/assets/dashboard.png)
+
+![Patient](/assets/patient.png)
+
 ## Demo Videos
 
 https://github.com/user-attachments/assets/ff1510b3-ee29-45e3-b5ed-985784c90a91
