@@ -76,3 +76,11 @@ Access web application at `http://127.0.0.1:8000` or `http://localhost:8000`.
 ## Demo Videos
 
 https://github.com/user-attachments/assets/ff1510b3-ee29-45e3-b5ed-985784c90a91
+
+https://github.com/user-attachments/assets/cb9711dc-8c4a-43e9-bce2-85ca8def8f62
+
+https://github.com/user-attachments/assets/db50159f-01da-4bee-b05c-be080af7fd04
+
+https://github.com/user-attachments/assets/232882cf-93c7-4ef9-a40c-cb64161b42e0
+
+https://github.com/user-attachments/assets/71f3a5cd-bf79-49ac-9308-8fae4ceb650a
