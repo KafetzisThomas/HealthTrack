@@ -185,7 +185,7 @@ class Command(BaseCommand):
             while True:
                 tick += 1
                 table = PrettyTable()
-                table.field_names = ["Patient", "Room", "HR", "SpO2", "Temp", "RR", "BP", "Status"]
+                table.field_names = ["Patient", "Room", "HR", "SpO2", "Temp", "RR", "BP", "Score", "Status"]
 
                 measurements = []
                 evaluations = {}
@@ -193,18 +193,19 @@ class Command(BaseCommand):
                     data = generate_measurement(patient, last.get(patient.id))
                     measurements.append(Measurement(patient=patient, **data))
 
-                    status, anomalies = evaluate_measurement(data)
+                    status, anomalies, news2_score = evaluate_measurement(data)
                     evaluations[patient.id] = {
-                        # overall status
-                        "status": status,
+                        "status": status,  # overall status
+                        "news2_score": news2_score,
                         # vitals that are abnormal only
                         "vital_statuses": {anomaly["vital_sign"]: anomaly["severity"] for anomaly in anomalies},
                     }
 
-                    if patient.status != status:
+                    if patient.status != status or patient.news2_score != news2_score:
                         patient.status = status
-                        patient.save(update_fields=["status"])
-                        
+                        patient.news2_score = news2_score
+                        patient.save(update_fields=["status", "news2_score"])
+
                         # broadcast status change to dashboard
                         async_to_sync(channel_layer.group_send)(
                             "dashboard",
@@ -213,6 +214,7 @@ class Command(BaseCommand):
                                 "data": {
                                     "patient_id": patient.id,
                                     "status": status,
+                                    "news2_score": news2_score,
                                 }
                             }
                         )
@@ -225,10 +227,11 @@ class Command(BaseCommand):
                         f"{data['temperature']}°C",
                         data["respiratory_rate"],
                         f"{data['systolic_bp']}/{data['diastolic_bp']}",
+                        f"NEWS2: {news2_score}",
                         status.upper(),
                     ])
 
-                self.stdout.write(f"\n{'=' * 34} Tick {tick} {'=' * 33}")
+                self.stdout.write(f"\n{'=' * 39} Tick {tick} {'=' * 39}")
                 self.stdout.write(table.get_string())
 
                 time.sleep(interval)
@@ -250,6 +253,7 @@ class Command(BaseCommand):
                                 "systolic_bp": measurement.systolic_bp,
                                 "diastolic_bp": measurement.diastolic_bp,
                                 "status": ev["status"],
+                                "news2_score": ev["news2_score"],
                                 "vital_statuses": ev["vital_statuses"],
                             },
                         },

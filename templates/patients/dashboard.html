@@ -22,6 +22,7 @@
                 <th>Full Name</th>
                 <th class="text-center">Age</th>
                 <th class="text-center">Room / Bed</th>
+                <th class="text-center">Score</th>
                 <th class="text-center">Status</th>
             </tr>
         </thead>
@@ -31,6 +32,7 @@
                     <td><a href="{% url 'patients:patient' patient.id %}">{{ patient.first_name }} {{ patient.last_name }}</a></td>
                     <td class="text-center">{{ patient.age }}</td>
                     <td class="text-center">{{ patient.room }} / {{ patient.bed }}</td>
+                    <td id="score-{{ patient.id }}" class="text-center">{{ patient.news2_score }}</td>
                     <td class="text-center">
                         <span id="status-badge-{{ patient.id }}" class="badge {% if patient.status == 'normal' %}bg-success{% elif patient.status == 'warning' %}bg-warning text-dark{% else %}bg-danger{% endif %} w-100">
                             {{ patient.get_status_display|upper }}
@@ -39,7 +41,7 @@
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="4" class="text-center text-muted">No patients found.</td>
+                    <td colspan="5" class="text-center text-muted">No patients found.</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -63,19 +65,24 @@
 
         socket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            const badge = document.getElementById(`status-badge-${data.patient_id}`);
+            const status = document.getElementById(`status-badge-${data.patient_id}`);
+            const score = document.getElementById(`score-${data.patient_id}`);
 
-            if (badge) {
-                badge.textContent = data.status.toUpperCase();
-                badge.className = "badge w-100";
+            if (score && data.news2_score != undefined) {
+                score.textContent = data.news2_score;
+            }
+
+            if (status) {
+                status.textContent = data.status.toUpperCase();
+                status.className = "badge w-100";
 
                 if (data.status === "normal") {
-                    badge.classList.add("bg-success");
+                    status.classList.add("bg-success");
                 } else if (data.status === "warning") {
-                    badge.classList.add("bg-warning", "text-dark");
+                    status.classList.add("bg-warning", "text-dark");
                     beep(440, 0.3);
                 } else if (data.status === "critical") {
-                    badge.classList.add("bg-danger");
+                    status.classList.add("bg-danger");
                     beep(880, 0.2);
                     setTimeout(() => beep(880, 0.2), 300);
                 }

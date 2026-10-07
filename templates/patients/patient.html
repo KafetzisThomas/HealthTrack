@@ -26,7 +26,7 @@
                     <p><strong>Bed:</strong> {{ patient.bed }}</p>
                 </div>
                 <div class="col-md-4">
-                    <p><strong>Status:</strong> <span id="overall-status" class="badge {% if patient.status == 'normal' %}bg-success{% elif patient.status == 'warning' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ patient.get_status_display|upper }}</span></p>
+                    <p><strong>Status:</strong> <span id="overall-status" class="badge {% if patient.status == 'normal' %}bg-success{% elif patient.status == 'warning' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ patient.get_status_display|upper }}</span> <span id="score-badge" class="badge bg-secondary ms-1">NEWS2: {{ patient.news2_score }}</span></p>
                     <p><strong>Admitted:</strong> {{ patient.admission_date|date:"d M Y, H:i:s" }}</p>
                     <p><strong>Doctor:</strong> {{ patient.assigned_doctor|default:"Unassigned" }}</p>
                 </div>
@@ -300,11 +300,19 @@
             addDataPoint(chartSBP, timestamp, data.systolic_bp);
             addDataPoint(chartDBP, timestamp, data.diastolic_bp);
 
-            // update overall status badge
+            // update overall status badge and score
             const overallStatus = document.getElementById("overall-status");
-            if (overallStatus) {
+            const scoreBadge = document.getElementById("score-badge");
+
+            if (overallStatus && scoreBadge) {
                 overallStatus.textContent = data.status.toUpperCase();
                 overallStatus.className = "badge";  // reset classes
+
+                if (data.news2_score !== undefined) {
+                    scoreBadge.style.display = "inline-block";
+                    scoreBadge.textContent = "NEWS2: " + data.news2_score;
+                }
+
                 if (data.status === "normal") {
                     overallStatus.classList.add("bg-success");
                 } else if (data.status === "warning") {
