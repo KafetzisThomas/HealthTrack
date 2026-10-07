@@ -37,3 +37,37 @@ body {
 .vital-card.status-critical {
   border-top-color: var(--bs-danger);
 }
+
+.bg-monitor {
+  background-color: #050505;
+  color: #ffffff;
+  border-radius: 6px;
+}
+
+.bg-monitor .card-title {
+  color: #aaaaaa !important;
+  margin-bottom: 0;
+}
+
+.monitor-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+  font-family: monospace;
+}
+
+.color-hr {
+  color: #00ff00;
+}
+.color-spo2 {
+  color: #00ffff;
+}
+.color-temp {
+  color: #ffcc00;
+}
+.color-rr {
+  color: #ffffff;
+}
+.color-bp {
+  color: #ff3333;
+}

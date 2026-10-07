@@ -41,50 +41,68 @@
     <h5 class="mb-3">Live Charts</h5>
     <div class="row g-3 mb-4">
         <div class="col-md-6">
-            <div class="card vital-card" id="card-heart_rate">
+            <div class="card vital-card bg-monitor" id="card-heart_rate">
                 <div class="card-body">
-                    <h6 class="card-title text-muted mb-2">Heart Rate <small class="fw-normal">(bpm)</small></h6>
-                    <div style="height: 160px;"><canvas id="chartHR"></canvas></div>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title text-muted">Heart Rate <small class="fw-normal">(bpm)</small></h6>
+                        <div class="monitor-value color-hr" id="val-hr">--</div>
+                    </div>
+                    <div style="height: 140px;"><canvas id="chartHR"></canvas></div>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card vital-card" id="card-spo2">
+            <div class="card vital-card bg-monitor" id="card-spo2">
                 <div class="card-body">
-                    <h6 class="card-title text-muted mb-2">SpO₂ <small class="fw-normal">(%)</small></h6>
-                    <div style="height: 160px;"><canvas id="chartSpO2"></canvas></div>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title text-muted">SpO₂ <small class="fw-normal">(%)</small></h6>
+                        <div class="monitor-value color-spo2" id="val-spo2">--</div>
+                    </div>
+                    <div style="height: 140px;"><canvas id="chartSpO2"></canvas></div>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card vital-card" id="card-temperature">
+            <div class="card vital-card bg-monitor" id="card-temperature">
                 <div class="card-body">
-                    <h6 class="card-title text-muted mb-2">Temperature <small class="fw-normal">(°C)</small></h6>
-                    <div style="height: 160px;"><canvas id="chartTemp"></canvas></div>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title text-muted">Temperature <small class="fw-normal">(°C)</small></h6>
+                        <div class="monitor-value color-temp" id="val-temp">--</div>
+                    </div>
+                    <div style="height: 140px;"><canvas id="chartTemp"></canvas></div>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card vital-card" id="card-respiratory_rate">
+            <div class="card vital-card bg-monitor" id="card-respiratory_rate">
                 <div class="card-body">
-                    <h6 class="card-title text-muted mb-2">Respiratory Rate <small class="fw-normal">(breaths/min)</small></h6>
-                    <div style="height: 160px;"><canvas id="chartRR"></canvas></div>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title text-muted">Respiratory Rate <small class="fw-normal">(breaths/min)</small></h6>
+                        <div class="monitor-value color-rr" id="val-rr">--</div>
+                    </div>
+                    <div style="height: 140px;"><canvas id="chartRR"></canvas></div>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card vital-card" id="card-systolic_bp">
+            <div class="card vital-card bg-monitor" id="card-systolic_bp">
                 <div class="card-body">
-                    <h6 class="card-title text-muted mb-2">Systolic BP <small class="fw-normal">(mmHg)</small></h6>
-                    <div style="height: 160px;"><canvas id="chartSBP"></canvas></div>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title text-muted">Systolic BP <small class="fw-normal">(mmHg)</small></h6>
+                        <div class="monitor-value color-bp" id="val-sbp">--</div>
+                    </div>
+                    <div style="height: 140px;"><canvas id="chartSBP"></canvas></div>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card vital-card" id="card-diastolic_bp">
+            <div class="card vital-card bg-monitor" id="card-diastolic_bp">
                 <div class="card-body">
-                    <h6 class="card-title text-muted mb-2">Diastolic BP <small class="fw-normal">(mmHg)</small></h6>
-                    <div style="height: 160px;"><canvas id="chartDBP"></canvas></div>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title text-muted">Diastolic BP <small class="fw-normal">(mmHg)</small></h6>
+                        <div class="monitor-value color-bp" id="val-dbp">--</div>
+                    </div>
+                    <div style="height: 140px;"><canvas id="chartDBP"></canvas></div>
                 </div>
             </div>
         </div>
@@ -184,7 +202,7 @@
             plugins: { legend: { display: false } },
             scales: {
                 x: { display: false },
-                y: { display: true, grid: { color: "rgba(128,128,128,0.15)" }, ticks: { maxTicksLimit: 5 } },
+                y: { display: true, grid: { color: "rgba(255,255,255,0.05)" }, ticks: { maxTicksLimit: 5, color: "rgba(255,255,255,0.5)" } },
             },
         };
 
@@ -196,11 +214,11 @@
                     datasets: [{
                         data: [...values],
                         borderColor: color,
-                        backgroundColor: color + "22",
+                        backgroundColor: "transparent",
                         borderWidth: 2,
                         pointRadius: 0,
-                        tension: 0.3,
-                        fill: true,
+                        tension: 0,
+                        fill: false,
                     }],
                 },
                 options: chartDefaults,
@@ -208,12 +226,22 @@
         }
 
         const seedLabels = seedData.map(d => d.t);
-        const chartHR = makeChart("chartHR", "#e74c3c", seedData.map(d => d.hr), seedLabels);
-        const chartSpO2 = makeChart("chartSpO2", "#3498db", seedData.map(d => d.spo2), seedLabels);
-        const chartTemp = makeChart("chartTemp", "#f39c12", seedData.map(d => d.temp), seedLabels);
-        const chartRR = makeChart("chartRR", "#2ecc71", seedData.map(d => d.rr), seedLabels);
-        const chartSBP = makeChart("chartSBP", "#ffff00", seedData.map(d => d.sbp), seedLabels);
-        const chartDBP = makeChart("chartDBP", "#9b59b6", seedData.map(d => d.dbp), seedLabels);
+        const chartHR = makeChart("chartHR", "#00ff00", seedData.map(d => d.hr), seedLabels);
+        const chartSpO2 = makeChart("chartSpO2", "#00ffff", seedData.map(d => d.spo2), seedLabels);
+        const chartTemp = makeChart("chartTemp", "#ffcc00", seedData.map(d => d.temp), seedLabels);
+        const chartRR = makeChart("chartRR", "#ffffff", seedData.map(d => d.rr), seedLabels);
+        const chartSBP = makeChart("chartSBP", "#ff3333", seedData.map(d => d.sbp), seedLabels);
+        const chartDBP = makeChart("chartDBP", "#ff3333", seedData.map(d => d.dbp), seedLabels);
+
+        if (seedData.length > 0) {
+            const last = seedData[seedData.length - 1];
+            document.getElementById("val-hr").textContent = last.hr;
+            document.getElementById("val-spo2").textContent = last.spo2;
+            document.getElementById("val-temp").textContent = last.temp;
+            document.getElementById("val-rr").textContent = last.rr;
+            document.getElementById("val-sbp").textContent = last.sbp;
+            document.getElementById("val-dbp").textContent = last.dbp;
+        }
 
         function addDataPoint(chart, label, ...values) {
             /*
@@ -255,6 +283,14 @@
             const heading = document.getElementById("history");
             const count = tbody.querySelectorAll("tr").length;
             heading.textContent = `Health History (${count})`;
+
+            // update current values
+            document.getElementById("val-hr").textContent = data.heart_rate;
+            document.getElementById("val-spo2").textContent = data.spo2;
+            document.getElementById("val-temp").textContent = parseFloat(data.temperature).toFixed(1);
+            document.getElementById("val-rr").textContent = data.respiratory_rate;
+            document.getElementById("val-sbp").textContent = data.systolic_bp;
+            document.getElementById("val-dbp").textContent = data.diastolic_bp;
 
             const timestamp = data.timestamp.split(", ")[1] ?? data.timestamp;
             addDataPoint(chartHR, timestamp, data.heart_rate);
