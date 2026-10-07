@@ -148,12 +148,12 @@ def generate_measurement(patient, prev):
         }
 
     return {
-        "heart_rate": int(round(drift(prev.heart_rate, patient.baseline_heart_rate, 3, 30, 220))),
-        "spo2": int(round(drift(prev.spo2, patient.baseline_spo2, 1, 50, 100))),
+        "heart_rate": round(drift(prev.heart_rate, patient.baseline_heart_rate, 3, 30, 220)),
+        "spo2": round(drift(prev.spo2, patient.baseline_spo2, 1, 50, 100)),
         "temperature": Decimal(str(round(drift(float(prev.temperature), float(patient.baseline_temperature), 0.2, 34.0, 42.0), 1))),
-        "respiratory_rate": int(round(drift(prev.respiratory_rate, patient.baseline_respiratory_rate, 2, 5, 40))),
-        "systolic_bp": int(round(drift(prev.systolic_bp, patient.baseline_systolic_bp, 3, 60, 250))),
-        "diastolic_bp": int(round(drift(prev.diastolic_bp, patient.baseline_diastolic_bp, 2, 30, 150))),
+        "respiratory_rate": round(drift(prev.respiratory_rate, patient.baseline_respiratory_rate, 2, 5, 40)),
+        "systolic_bp": round(drift(prev.systolic_bp, patient.baseline_systolic_bp, 3, 60, 250)),
+        "diastolic_bp": round(drift(prev.diastolic_bp, patient.baseline_diastolic_bp, 2, 30, 150)),
     }
 
 
