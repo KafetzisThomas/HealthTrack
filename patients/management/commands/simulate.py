@@ -1,12 +1,14 @@
-import time
 import random
+import time
 from decimal import Decimal
-from prettytable import PrettyTable
-from django.core.management.base import BaseCommand
+
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from ...models import Patient, Measurement
+from django.core.management.base import BaseCommand
+from prettytable import PrettyTable
+
 from ...anomaly import evaluate_measurement
+from ...models import Measurement, Patient
 
 TICK_INTERVAL = 2
 

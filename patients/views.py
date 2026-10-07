@@ -1,9 +1,11 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
 from django.contrib import messages
-from .models import Patient
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
+
 from .forms import PatientForm
+from .models import Patient
+
 
 @login_required
 def dashboard(request):
