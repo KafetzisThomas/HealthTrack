@@ -20,6 +20,26 @@ and notifies medical staff with live warning and critical indicators.
 - [X] Receive **instant audio alerts** for abnormal vital signs, single beep for **warning**, double beep for **critical**
 - [X] Brute force login protection with **rate limiting**
 
+## System Architecture
+
+```mermaid
+flowchart TD
+    Simulator["Vitals Simulator"]
+    DB[("Database (PostgreSQL)")]
+    Redis[("Message Broker (Redis)")]
+    Server["Django Web Server"]
+    Client["Medical Staff (Browser)"]
+
+    Simulator -->|"Saves patient history"| DB
+    Simulator -->|"Broadcasts live vitals"| Redis
+
+    Server -->|"Fetches patient records"| DB
+    Redis -->|"Routes telemetry streams"| Server
+
+    Client -->|"Loads web dashboard"| Server
+    Server -->|"Pushes real-time alerts & charts"| Client
+```
+
 ## Database Schema
 
 ![Database Schema](/assets/db_schema.png)
