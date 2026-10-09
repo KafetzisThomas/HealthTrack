@@ -236,8 +236,6 @@ class Command(BaseCommand):
                 self.stdout.write(f"\n{'=' * 39} Tick {tick} {'=' * 39}")
                 self.stdout.write(table.get_string())
 
-                time.sleep(interval)
-
                 for measurement in Measurement.objects.bulk_create(measurements):
                     last[measurement.patient_id] = measurement
                     ev = evaluations[measurement.patient_id]
@@ -260,5 +258,8 @@ class Command(BaseCommand):
                             },
                         },
                     )
+
+                time.sleep(interval)
+
         except KeyboardInterrupt:
             self.stdout.write("\nSimulator stopped.")
