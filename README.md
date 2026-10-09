@@ -55,6 +55,12 @@ uv sync
 uv sync --group dev  # for devs only
 ```
 
+Start PostgreSQL and Redis services:
+
+```bash
+docker compose up -d
+```
+
 Migrate database:
 
 ```bash
@@ -65,12 +71,6 @@ Create a superuser for admin and creating accounts/doctors:
 
 ```bash
 uv run manage.py createsuperuser
-```
-
-Start Redis server:
-
-```bash
-docker run -d --name redis -p 6379:6379 redis
 ```
 
 Run the simulator:

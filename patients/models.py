@@ -20,7 +20,7 @@ class Patient(models.Model):
     bed = models.CharField(max_length=10)
     admission_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=10, choices=Status, default=Status.NORMAL)
-    news2_score = models.PositiveSmallIntegerField()
+    news2_score = models.PositiveSmallIntegerField(default=0)
     assigned_doctor = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
