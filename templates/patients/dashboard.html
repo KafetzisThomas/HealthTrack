@@ -24,6 +24,7 @@
                 <th class="text-center">Room / Bed</th>
                 <th class="text-center">Score</th>
                 <th class="text-center">Status</th>
+                <th class="text-center" style="width: 70px;">Alerts</th>
             </tr>
         </thead>
         <tbody>
@@ -38,10 +39,15 @@
                             {{ patient.get_status_display|upper }}
                         </span>
                     </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-sm btn-outline-secondary mute-btn" data-patient-id="{{ patient.id }}">
+                            <i class="bi bi-volume-up-fill"></i>
+                        </button>
+                    </td>
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center text-muted">No patients found.</td>
+                    <td colspan="6" class="text-center text-muted">No patients found.</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -50,6 +56,27 @@
     <script>
         const protocol = window.location.protocol === "https:" ? "wss" : "ws";
         const socket = new WebSocket(`${protocol}://${window.location.host}/ws/dashboard/`);
+        const mutedPatients = new Set();
+
+        document.querySelector("table tbody").addEventListener("click", e => {
+            const btn = e.target.closest(".mute-btn");
+            if (!btn) {
+                return;
+            }
+
+            const patientId = parseInt(btn.dataset.patientId, 10);
+            const icon = btn.querySelector("i");
+
+            if (mutedPatients.has(patientId)) {
+                mutedPatients.delete(patientId);
+                icon.className = "bi bi-volume-up-fill";
+                btn.classList.replace("btn-outline-danger", "btn-outline-secondary");
+            } else {
+                mutedPatients.add(patientId);
+                icon.className = "bi bi-volume-mute-fill";
+                btn.classList.replace("btn-outline-secondary", "btn-outline-danger");
+            }
+        });
 
         function beep(frequency, duration) {
             const ctx = new AudioContext();
@@ -76,15 +103,21 @@
                 status.textContent = data.status.toUpperCase();
                 status.className = "badge w-100";
 
+                const isMuted = mutedPatients.has(Number(data.patient_id));
+
                 if (data.status === "normal") {
                     status.classList.add("bg-success");
                 } else if (data.status === "warning") {
                     status.classList.add("bg-warning", "text-dark");
-                    beep(440, 0.3);
+                    if (!isMuted) {
+                        beep(440, 0.3);
+                    }
                 } else if (data.status === "critical") {
                     status.classList.add("bg-danger");
-                    beep(880, 0.2);
-                    setTimeout(() => beep(880, 0.2), 300);
+                    if (!isMuted) {
+                        beep(880, 0.2);
+                        setTimeout(() => beep(880, 0.2), 300);
+                    }
                 }
             }
         };
