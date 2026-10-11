@@ -56,6 +56,19 @@ body {
   font-family: monospace;
 }
 
+.table th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.table th.sort-asc::after {
+  content: " ▲";
+}
+
+.table th.sort-desc::after {
+  content: " ▼";
+}
+
 .color-hr {
   color: #00ff00;
 }

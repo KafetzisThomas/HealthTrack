@@ -108,17 +108,22 @@
         </div>
     </div>
 
-    <h5 id="history" class="mb-3">Health History ({{ measurements|length }})</h5>
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h5 id="history" class="mb-0">Health History ({{ measurements|length }})</h5>
+        <button id="pause-btn" class="btn btn-outline-secondary btn-sm" onclick="togglePause()">
+            <i class="bi bi-pause-fill"></i> Pause
+        </button>
+    </div>
 
     <table class="table table-bordered table-hover">
         <thead class="table-dark">
             <tr>
-                <th>Timestamp</th>
-                <th>Heart Rate (bpm)</th>
-                <th>SpO2 (%)</th>
-                <th>Temp (°C)</th>
-                <th>Resp. Rate</th>
-                <th>BP (mmHg)</th>
+                <th class="sortable">Timestamp</th>
+                <th class="sortable">Heart Rate (bpm)</th>
+                <th class="sortable">SpO2 (%)</th>
+                <th class="sortable">Temp (°C)</th>
+                <th class="sortable">Resp. Rate</th>
+                <th class="sortable">BP (mmHg)</th>
             </tr>
         </thead>
         <tbody>
@@ -259,6 +264,83 @@
 
         // HISTORY TABLE
 
+        let paused = false;
+        let pendingRows = [];
+
+        function togglePause() {
+            paused = !paused;
+            const btn = document.getElementById("pause-btn");
+
+            if (paused) {
+                btn.innerHTML = '<i class="bi bi-play-fill"></i> Resume';
+                btn.classList.replace("btn-outline-secondary", "btn-outline-success");
+            } else {
+                btn.innerHTML = '<i class="bi bi-pause-fill"></i> Pause';
+                btn.classList.replace("btn-outline-success", "btn-outline-secondary");
+
+                const tbody = document.querySelector("table tbody");
+                pendingRows.forEach(row => tbody.prepend(row));
+                pendingRows = [];
+
+                document.querySelectorAll("table thead th").forEach(th => {
+                    th.classList.remove("sort-asc", "sort-desc");
+                    th.removeAttribute("aria-sort");
+                });
+
+                const heading = document.getElementById("history");
+                heading.textContent = `Health History (${tbody.querySelectorAll("tr").length})`;
+            }
+        }
+
+        document.querySelector("table thead").addEventListener("click", e => {
+            const th = e.target.closest("th.sortable");
+            if (!th) {
+                return;
+            }
+
+            const tbody = document.querySelector("table tbody");
+            if (tbody.querySelector("td.text-muted")) {
+                return;
+            }
+
+            if (!paused) {
+                togglePause();
+            }
+
+            const isAsc = !th.classList.contains("sort-asc");
+            document.querySelectorAll("table thead th").forEach(h => {
+                h.classList.remove("sort-asc", "sort-desc");
+                h.removeAttribute("aria-sort");
+            });
+            th.classList.add(isAsc ? "sort-asc" : "sort-desc");
+            th.setAttribute("aria-sort", isAsc ? "ascending" : "descending");
+
+            const colIndex = th.cellIndex;
+            const rows = Array.from(tbody.querySelectorAll("tr"));
+
+            rows.sort((a, b) => {
+                const aText = a.cells[colIndex].textContent.trim();
+                const bText = b.cells[colIndex].textContent.trim();
+
+                let cmp;
+                if (colIndex === 0) {
+                    const aDate = Date.parse(aText);
+                    const bDate = Date.parse(bText);
+                    // sort chronologically if both values are dates otherwise fallback to text comparison
+                    cmp = (!isNaN(aDate) && !isNaN(bDate)) ? aDate - bDate : aText.localeCompare(bText);
+                } else {
+                    const aNum = parseFloat(aText);
+                    const bNum = parseFloat(bText);
+                    // sort numerically if both values are numbers otherwise fallback to text comparison
+                    cmp = (!isNaN(aNum) && !isNaN(bNum)) ? aNum - bNum : aText.localeCompare(bText);
+                }
+
+                return isAsc ? cmp : -cmp;
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        });
+
         socket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             const tbody = document.querySelector("table tbody");
@@ -277,12 +359,18 @@
                 emptyRow.closest("tr").remove();
             }
 
-            tbody.prepend(row);
+            if (paused) {
+                pendingRows.push(row);
+                if (pendingRows.length > 100) {
+                    pendingRows.shift();
+                }
+            } else {
+                tbody.prepend(row);
 
-            // update measurement count
-            const heading = document.getElementById("history");
-            const count = tbody.querySelectorAll("tr").length;
-            heading.textContent = `Health History (${count})`;
+                // update measurement count
+                const heading = document.getElementById("history");
+                heading.textContent = `Health History (${tbody.querySelectorAll("tr").length})`;
+            }
 
             // update current values
             document.getElementById("val-hr").textContent = data.heart_rate;
