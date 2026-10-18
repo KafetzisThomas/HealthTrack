@@ -42,7 +42,55 @@ flowchart TD
 
 ## Database Schema
 
-![Database Schema](/assets/db_schema.png)
+```mermaid
+erDiagram
+    direction LR
+    User |o--o{ Patient : "assigned_doctor"
+    Patient ||--o{ Measurement : "has"
+
+    User {
+        integer id PK
+        varchar username
+        varchar password
+        boolean is_active
+        boolean is_staff
+        boolean is_superuser
+        timestamp last_login
+        timestamp date_joined
+    }
+
+    Patient {
+        bigint id PK
+        integer assigned_doctor_id FK
+        varchar first_name
+        varchar last_name
+        smallint age
+        varchar gender
+        varchar room
+        varchar bed
+        timestamp admission_date
+        varchar status
+        smallint news2_score
+        smallint baseline_heart_rate
+        smallint baseline_spo2
+        numeric baseline_temperature
+        smallint baseline_respiratory_rate
+        smallint baseline_systolic_bp
+        smallint baseline_diastolic_bp
+    }
+
+    Measurement {
+        bigint id PK
+        bigint patient_id FK
+        timestamp timestamp
+        smallint heart_rate
+        smallint spo2
+        numeric temperature
+        smallint respiratory_rate
+        smallint systolic_bp
+        smallint diastolic_bp
+    }
+```
 
 ## Usage
 
