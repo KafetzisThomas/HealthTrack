@@ -147,7 +147,7 @@ Access web application at `http://127.0.0.1:8000` or `http://localhost:8000`.
 > [!NOTE]
 > Click unmute on the video player to hear the audio alerts (GitHub mutes playback by default).
 
-https://github.com/user-attachments/assets/ff1510b3-ee29-45e3-b5ed-985784c90a91
+https://github.com/user-attachments/assets/10c4dbca-ff13-45c1-bdcd-68bde251c054
 
 https://github.com/user-attachments/assets/cb9711dc-8c4a-43e9-bce2-85ca8def8f62
 
