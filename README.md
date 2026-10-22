@@ -149,9 +149,9 @@ Access web application at `http://127.0.0.1:8000` or `http://localhost:8000`.
 
 https://github.com/user-attachments/assets/10c4dbca-ff13-45c1-bdcd-68bde251c054
 
-https://github.com/user-attachments/assets/cb9711dc-8c4a-43e9-bce2-85ca8def8f62
+https://github.com/user-attachments/assets/86c8c815-edda-4d05-8b02-fc7120ca3dc7
 
-https://github.com/user-attachments/assets/db50159f-01da-4bee-b05c-be080af7fd04
+https://github.com/user-attachments/assets/612e82a0-e62a-47db-9363-27517fecfeac
 
 https://github.com/user-attachments/assets/232882cf-93c7-4ef9-a40c-cb64161b42e0
 
